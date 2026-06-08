@@ -55,7 +55,7 @@ def get_min_time_diff(num,filename):
 	
 if __name__ == "__main__":
 	filename = "time_py.txt"
-	num = 100
+	num = 1000000
     
 	counter = get_cpu_time_counter()
 	print(f"CPU time counter: {counter} ns")
