@@ -63,5 +63,5 @@ if __name__ == "__main__":
 	print(f"CPU time diff: {counter2-counter} ns")
 
 ## Uncomment the lines below to run multiple measurement iterations
-	min_diff=get_min_time_diff(num,filename)
-	print(f"CPU min diff time: {min_diff} ns")
+	#min_diff=get_min_time_diff(num,filename)
+	#print(f"CPU min diff time: {min_diff} ns")
