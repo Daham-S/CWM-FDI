@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 
 
 # parameters to modify 
-filename="time_py.txt"
+filename="time_c.txt"
 label='Python'
 xlabel = 'Time (ns)'
 ylabel = 'CDF (Prob of being less than T)'
-title='CDF of CPU Time Diff over 100  iterations'
+title='CDF of CPU Time Diff over 1m iterations'
 fig_name='my_graph.png'
 bins=100 #adjust the number of bins to your plot
 
 ## load data from input file
-t = np.loadtxt(filename, delimiter=" ", dtype="float")[2:]
+t = np.loadtxt(filename, delimiter=" ", dtype="float")[0:]
 
 ## if your data is "X Y" (2 cols), use the following line
 #plt.plot(t[:,0], t[:,1], label=label)  # Plot some data on the (implicit) axes.
