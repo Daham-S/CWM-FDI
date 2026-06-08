@@ -56,10 +56,11 @@ def get_min_time_diff(num,filename):
 if __name__ == "__main__":
 	filename = "time_py.txt"
 	num = 100
-	counter = get_cpu_time_counter()
-	print(f"CPU time counter: {counter} ns")
-	counter2 = get_cpu_time_counter()
-	print(f"CPU time diff: {counter2-counter} ns")
+    for i in range(1,10):
+        counter = get_cpu_time_counter()
+	    print(f"CPU time counter: {counter} ns")
+	    counter2 = get_cpu_time_counter()
+	    print(f"CPU time diff: {counter2-counter} ns")
 
 ## Uncomment the lines below to run multiple measurement iterations
 	#min_diff=get_min_time_diff(num,filename)
