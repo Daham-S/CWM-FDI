@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 
 
 # parameters to modify 
-filename="data_03.txt"
-label='Python'
+filename="time_c.txt"
+label='C'
 xlabel = 'Time (ns)'
 ylabel = 'CDF (Prob of being less than T)'
-title='CDF of Ping RTT over 1000 iterations, interval 0.0001'
+title='CDF of CPU Time Diff over 1m iterations'
 fig_name='my_graph.png'
 bins=100 #adjust the number of bins to your plot
 
