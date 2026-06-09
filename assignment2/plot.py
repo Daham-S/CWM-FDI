@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 
 
 # parameters to modify 
-filename="ping_1.log"
+filename="data_03.txt"
 label='Python'
 xlabel = 'Time (ns)'
 ylabel = 'CDF (Prob of being less than T)'
-title='CDF of Ping RTT over 1000 iterations, interval 0.01'
+title='CDF of Ping RTT over 1000 iterations, interval 0.0001'
 fig_name='my_graph.png'
 bins=100 #adjust the number of bins to your plot
 
 ## load data from input file
-t = np.loadtxt(filename, delimiter=" ", dtype="float")[0:]
+t = np.loadtxt(filename, delimiter=" ", dtype="float")
 
 
 ## if your data is "X Y" (2 cols), use the following line
