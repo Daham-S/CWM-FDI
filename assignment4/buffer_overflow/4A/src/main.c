@@ -56,7 +56,7 @@ void append_address(char* buf, int i, uint64_t addr)
 
     // NOTE: Address is stored as little endian, hence the swip-swapping
 
-    buf[i + 0] = (char)((addr >> 0) & 0xFF);
+    buf[i + 0] = (char)((addr >> 0) & 0xFF); 
     buf[i + 1] = (char)((addr >> 8) & 0xFF);
     buf[i + 2] = (char)((addr >> 16) & 0xFF);
     buf[i + 3] = (char)((addr >> 24) & 0xFF);
@@ -106,8 +106,11 @@ int main(int argc, char* argv[])
     char evil_str[128];
     for (int j = 0; j < 128; j++) evil_str[j] = 0x41;  // Fill entire buffer
     
-    append_address(evil_str, address_start_byte, function_addr);
-    // hexdump_arr(evil_str);   // Uncomment for debug
+     append_address(evil_str, 0, 0xdeadbeef);
+     hexdump_arr(evil_str);   // Uncomment for debug
+     uint64_t function_addr2 = (uint64_t)(evil_str);
+     printf("evil string address 0x%lx \n", evil_str);
+
 
     // Call the victim with normal input
     victim("0123456789ABCDE"); // Normal input of expected length == 16. No issues here
