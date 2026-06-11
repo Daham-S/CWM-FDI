@@ -48,14 +48,6 @@ get_busy_percentage()
 
 busy = True
 
-print("Monitoring CPU usage. Waiting for CPU usage to drop below 5%")
-while busy == True:
-   busy_perc = get_busy_percentage()
-   print(f"Current CPU usage is {busy_perc}%")
-   if busy_perc <= 5:
-   	busy = False
-print ("succeeded")
-
 
 # run matmul_fast.py 
 
@@ -64,7 +56,21 @@ print ("succeeded")
 #   run = subprocess.run(cmd,capture_output=True,text=True,check=True)
 
 def check_energy_usage():
-cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py 500']
-try:
-        perc_cpu = subprocess.run(cmd, capture_output=True, text=True, check=True)
+   cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py 500']
+   try:
+   	 perc_cpu = subprocess.run(cmd, capture_output=True, text=True, check=True)
+   except:
+   	print("failed to get Energy data")
 
+
+busy = True
+
+print("Monitoring CPU usage. Waiting for CPU usage to drop below 5%")
+while busy == True:
+   busy_perc = get_busy_percentage()
+   print(f"Current CPU usage is {busy_perc}%")
+   if busy_perc <= 5:
+        busy = False
+print ("succeeded")
+
+check_energy_usage()
