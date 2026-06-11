@@ -7,6 +7,7 @@ so the computation has an observable result.
 """
 
 import sys
+import time
 from typing import List
 
 Matrix = List[List[float]]
@@ -79,8 +80,27 @@ def main(argv: list[str]) -> int:
 
     c = zero_matrix(n)
 
+    total_time_ns = 0
+
     for _ in range(reps):
         matmul_slow(a, b, c, n)
+    for _ in range(reps):
+        start = time.perf_counter_ns()
+        matmul_slow(a, b, c, n)
+        end = time.perf_counter_ns()
+        total_time_ns += (end-start)
+
+    #Avg time for the entire func
+    avg_func_time_ns = total_time_ns /reps
+
+    #Avg tiem per single cell
+    total_cells = n*n
+    avg_cell_time_ns = avg_func_time_ns / total_cells
+
+    print(f"Average time for matmul_slow: {avg_func_time_ns:,.2f} ns")
+    print(f"Average time per cell:        {avg_cell_time_ns:,.2f} ns")
+
+
 
     print(f"n={n} reps={reps} checksum={checksum(c, n):.6f}")
     return 0
