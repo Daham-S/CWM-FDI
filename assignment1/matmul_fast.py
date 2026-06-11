@@ -110,7 +110,7 @@ def main(argv: list[str]) -> int:
 
     c = zero_matrix(n)
 
-     total_time_ns = 0
+    total_time_ns = 0
 
     for _ in range(reps):
         matmul_fast3(a, b, c, n)
