@@ -114,11 +114,11 @@ def main(argv: list[str]) -> int:
     total_time_ns = 0
 
     for _ in range(reps):
-        matmul_fast2(a, b, c, n)
+        matmul_fast1(a, b, c, n)
         
     for _ in range(reps):
         start = time.perf_counter_ns()
-        matmul_fast2(a, b, c, n)
+        matmul_fast1(a, b, c, n)
         end = time.perf_counter_ns()
         total_time_ns += (end-start)
 
@@ -129,7 +129,7 @@ def main(argv: list[str]) -> int:
     total_cells = n*n
     avg_cell_time_ns = avg_func_time_ns / total_cells
 
-    print(f"Average time for matmul_fast2: {avg_func_time_ns:,.2f} ns")
+    print(f"Average time for matmul_fast1: {avg_func_time_ns:,.2f} ns")
     print(f"Average time per cell:        {avg_cell_time_ns:,.2f} ns")
 
 
