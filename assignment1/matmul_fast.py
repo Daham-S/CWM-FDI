@@ -7,6 +7,7 @@ so the computation has an observable result.
 """
 
 import sys
+import time
 from typing import List
 
 Matrix = List[List[float]]
