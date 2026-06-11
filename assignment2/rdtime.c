@@ -150,8 +150,13 @@ uint64_t min_consecutive_diff(size_t num, const char *filename) {
     /*
      * Collect TSC readings.
      */
-    for (size_t i = 0; i < num; i++) {
+    for (size_t i = 0; i < num - 1; i += 2) {
         timestamps[i] = read_tsc();
+        timestamps[i+1] = read_tsc();
+    }
+    // Catch the last odd element if num is not even
+    if (num % 2 != 0) {
+        timestamps[num - 1] = read_tsc();
     }
 
     /*
