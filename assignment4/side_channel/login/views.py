@@ -49,6 +49,35 @@ def safe_check(username: str, password: str) -> bool:
 
     return len(password) == len(SECRET_PASSWORD)
 
+def safe_check2(username: str, password: str) -> bool:
+    """
+    Constant-time password check.
+    Iterates through the entire string and uses bitwise operations 
+    to prevent short-circuiting, eliminating the timing side-channel.
+    """
+    if username != SECRET_USERNAME:
+        return False
+
+    # If the lengths don't match, we can immediately reject it.
+    # (Note: While this does leak the *length* of the password, the 
+    # assignment's primary goal is protecting the character contents).
+    if len(password) != len(SECRET_PASSWORD):
+        return False
+
+    result = 0
+
+    for i in range(len(SECRET_PASSWORD)):
+        # 1. Convert characters to their integer Unicode values using ord()
+        # 2. XOR (^) the values. If they match, XOR outputs 0. If they differ, it outputs > 0.
+        # 3. Bitwise OR (|) accumulates any differences into the 'result' variable.
+        result |= ord(password[i]) ^ ord(SECRET_PASSWORD[i])
+        
+        # We execute the sleep function on EVERY iteration, regardless of a match.
+        time.sleep(DELAY_PER_CHAR)
+
+    # If result is still 0, no differences were found.
+    return result == 0
+
 
 
 
