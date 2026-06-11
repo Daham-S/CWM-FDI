@@ -28,6 +28,9 @@ import subprocess
 #   print(lines)
 
 # find busy percentage
+
+
+
 def get_busy_percentage():
    #pass command as a list of arguments
    cmd = ['sudo','turbostat','-q','-S','--show','Busy%', '-i', '1','-n', '1']
@@ -52,3 +55,16 @@ while busy == True:
    if busy_perc <= 5:
    	busy = False
 print ("succeeded")
+
+
+# run matmul_fast.py 
+
+#def run_program():
+#   cmd = ['python3','matmul_fast.py']
+#   run = subprocess.run(cmd,capture_output=True,text=True,check=True)
+
+def check_energy_usage():
+cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py 500']
+try:
+        perc_cpu = subprocess.run(cmd, capture_output=True, text=True, check=True)
+
