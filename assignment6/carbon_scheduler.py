@@ -44,9 +44,9 @@ def get_busy_percentage():
    # Check if the 
    return busy_perc
 
-get_busy_percentage()
+#get_busy_percentage()
 
-busy = True
+#busy = True
 
 
 # run matmul_fast.py 
@@ -56,11 +56,13 @@ busy = True
 #   run = subprocess.run(cmd,capture_output=True,text=True,check=True)
 
 def check_energy_usage():
-   cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py 500']
+   cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py','500']
    try:
-   	 perc_cpu = subprocess.run(cmd, capture_output=True, text=True, check=True)
-   except:
+   	result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+   	print(f"Energy Measurement is {result} J")
+   except subprocess.CalledProcessError as e:
    	print("failed to get Energy data")
+   	print(f"Error details: {e.stderr}")
 
 
 busy = True
