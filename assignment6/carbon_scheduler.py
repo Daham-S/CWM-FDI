@@ -59,7 +59,19 @@ def check_energy_usage():
    cmd = ['sudo','turbostat','-q','--Joules','--show','Pkg_J', 'python3', 'matmul_fast_modified.py','500']
    try:
    	result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-   	print(f"Energy Measurement is {result} J")
+   	raw_output = result.stderr.strip()
+   	lines = raw_output.splitlines()
+   	energy_joules = None
+   	for i, line in enumerate(lines):
+   	   if line == 'Pkg_J':
+   	   	#Grab the next line 
+   	   	energy_joules = float(lines[i+1])
+   	   	break
+   	if energy_joules is not None:
+   	   return energy_joules
+   	else:
+   	   print("failed to get the energy")
+#  return energy_joules
    except subprocess.CalledProcessError as e:
    	print("failed to get Energy data")
    	print(f"Error details: {e.stderr}")
@@ -75,4 +87,5 @@ while busy == True:
         busy = False
 print ("succeeded")
 
-check_energy_usage()
+energy_joules = check_energy_usage()
+print(f"Measure of energy is {energy_joules}J")
