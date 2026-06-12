@@ -202,6 +202,49 @@ def geolocate_ips(ip_list):
 
     return hop_postcodes
 
+def get_carbon_intensity_array(hop_postcodes):
+
+    carbon_intensities = []
+    for i,postcode in enumerate(hop_postcodes):
+        if postcode is None:
+            continue
+         #Define NESO API endpoint URL
+        url= 'https://api.carbonintensity.org.uk/regional/postcode/' + postcode
+        header= {'Accept':'application/json'}
+
+        try:
+            #Make a GET request to the API
+            response = requests.get(url, headers=header)
+
+            if response is not None:
+                data = response.json()
+#               print(data)
+                regional_data = data['data'][0]
+                current_intensity = regional_data['data'][0]['intensity']['forecast']
+                carbon_intensities.append(current_intensity)
+            else:
+                print("Invalid Response from NESO API")
+  
+        except requests.exceptions.RequestException as e:
+            print("failed to get Energy data due to network error")
+            print(f"Error details: {e}")
+    return carbon_intensities
+
+def get_carbon_footprint_network(carbon_intensities,file_size):
+    energy_total = 0
+    #Juniper PTX10008
+    router_link_capacity = 100*10**9
+    router_idle_power = 12000
+    router_max_power = 17300
+    ports = 288
+    dynamic_power = (router_max_power - router_idle_power)
+    dynamic_power_per_port = dynamic_power_per_port/ports
+    time = file_size/router_link_capacity
+    energy_per_hop = dynamic_power_per_port*time
+
+    for i,CI in enumerate(carbon_intensities):
+        carbon_footprint_total += energy_per_hop * CI
+
 busy = True
 
 print("Monitoring CPU usage. Waiting for CPU usage to drop below 5%")
@@ -230,4 +273,10 @@ print(f"The Carbon intensity in Aberdeen is {aberdeen_CI} gCO2/kWh")
 aberdeen_destination_ip = '139.133.246.148'
 IPs = discover_path(aberdeen_destination_ip)
 print(IPs)
-geolocate_ips(IPs)
+router_postcodes = geolocate_ips(IPs)
+router_carbon_intensities = get_carbon_intensity_array(router_postcodes)
+print(f"The carbon intensities of the router locations are {router_carbon_intensities}")
+
+file_size = 3.6 * 1000 * 8 
+network_carbon_footprint=get_carbon_footprint_network(router_carbon_intensities,file_size)
+print(f"The network carbon footprint of sending the file over the network {network_carbon_footprint}")
