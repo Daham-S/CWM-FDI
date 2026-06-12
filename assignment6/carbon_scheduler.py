@@ -123,32 +123,62 @@ def discover_path(destination,max_hops=30):
                       check=True
              )
         data = result.stdout.splitlines()
-        # Regex to look for standard IPv4 addresses in the output
+        # use regex to look for ip address pattern
         ip_pattern = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
 
         for line in result.stdout.splitlines():
      	    match = ip_pattern.search(line)
      	    if match:
      	        ip = match.group(0)
-                            # Avoid adding the destination IP repeatedly if the trace finishes early
+          # stop duplicate ip addresses from being added
      	        if ip not in ips_found:
      	            ips_found.append(ip)
         return ips_found
 
-    except FileNotFoundError:
-        print("Error: 'tracepath' command not found. Ensure it is installed on your Linux system.")
+    except:
+        print("Error: failed to trace packets")
         return []
+
+JANET_POSTCODES = {
+    "aberew": "AB24",  # Elphinstone West, University of Aberdeen
+    "aber": "AB24",    
+    "glasss": "G3",    # South Street Node, Glasgow
+    "glas": "G3",      
+    "edis": "EH8",     # Edinburgh University / City Node
+    "edin": "EH8",     
+    "dund": "DD1",     # Dundee Node
+    "manckh": "M13",   # Kilburn House, University of Manchester
+    "manc": "M13",     
+    "leed": "LS2",     # Leeds Regional Node
+    "birm": "B15",     # Birmingham Regional Node
+    "londpg": "E14",   # Powergate Data Centre / Telehouse West, London
+    "erdiss": "E14",   # London Core Infrastructure Hub
+    "harwat": "OX11",  # Jisc HQ, Harwell Oxford Campus
+    "bris": "BS8",     # Bristol Regional Node
+    "belf": "BT7"      # Belfast Node (Queen's University area)
+}
+
+def parse_janet_domain(domain_name):
+    domain = domain_name.lower().strip()
+    if not domain.endswith(".ja.net"):
+        return None
+    for substring, postcode in JANET_POSTCODES.items():
+        if substring in domain:
+            return postcode
+
+
 def geolocate_ips(ip_list):
-    print("\nGeolocating discovered IPs...")
+    print("\nGeolocating IPs")
     hop_data = []
+    hop_postcodes = []
     for ip in ip_list:
         # We cannot geolocate private local ip addresses
         if ipaddress.ip_address(ip).is_private:
-            print(f"Hop IP: {ip} (Private Local Network - Skipping)")
+            print(f"Hop IP: {ip} (Private Network - Skipping)")
             continue
         try:
-            # using the free ip-api
-            response = requests.get(f"http://ip-api.com/json/{ip}?fields=status,country,regionName,city,zip,isp", timeout=5)
+            # using the ip-api API
+            response = requests.get(f"http://ip-api.com/json/{ip}?fields=status,country,regionName,city,zip,isp,reverse", timeout=5)
             data = response.json()
             if data.get("status") == "success":
                 hop_info = {
@@ -157,16 +187,20 @@ def geolocate_ips(ip_list):
                     "country": data.get("country"),
                     "region": data.get("regionName"),
                     "city": data.get("city"),
-                    "postcode": data.get("zip", "No Postcode Provided") 
+                    "postcode": data.get("zip"), 
+                    "domain_name":data.get("reverse")
                 }
                 hop_data.append(hop_info)
-                print(f"Hop IP: {ip} | Location: {hop_info['city']}, {hop_info['country']} | Postcode: {hop_info['postcode']}")
+                print(f"Hop IP: {ip} | Location: {hop_info['city']}, {hop_info['country']} | Postcode: {hop_info['postcode']} | Domain Name: {hop_info['domain_name']}" )
+                postcode = parse_janet_domain(hop_info['domain_name'])
+                hop_postcodes.append(postcode)
+                print(f"Hop Postcode: {hop_postcodes}")
             else:
                 print(f"Hop IP: {ip} | Geolocation Failed")
-        except requests.exceptions.RequestException as e:
-            print(f"Error querying API for {ip}: {e}")
+        except Exception as e:
+            print(f"Error processing {ip}: {e}")
 
-    return hop_data
+    return hop_postcodes
 
 busy = True
 
