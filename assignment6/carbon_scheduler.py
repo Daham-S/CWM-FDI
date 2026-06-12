@@ -12,7 +12,7 @@
 import os
 import time
 import subprocess
-
+import requests
 # I need to check whether the % of latest busy% value is less than 5. If it is then 
 #the program continues if not then the program keeps waiting
 
@@ -76,6 +76,27 @@ def check_energy_usage():
    	print("failed to get Energy data")
    	print(f"Error details: {e.stderr}")
 
+def get_carbon_intensity():
+   #Define NESO API endpoint URL
+   url= 'https://api.carbonintensity.org.uk/intensity'
+   header= {'Accept:','application/json'}
+
+   try:
+   	#Make a GET request to the API
+   	response = requests.get(url)
+
+   	if response is not None:
+   	   data = response.json()
+   	   #print(data)
+   	   current_intensity = data['data'][0]['intensity']['actual']
+   	   return current_intensity
+   	else:
+   	   print("Invalid Response from NESO API")
+
+   except subprocess.CalledProcessError as e:
+   	print("failed to get Energy data")
+   	print(f"Error details: {e.stderr}")
+
 
 busy = True
 
@@ -89,3 +110,6 @@ print ("succeeded")
 
 energy_joules = check_energy_usage()
 print(f"Measure of energy is {energy_joules}J")
+
+CI = get_carbon_intensity()
+print(f"The Carbon intensity in the Uk is {CI} gCO2/kWh")
