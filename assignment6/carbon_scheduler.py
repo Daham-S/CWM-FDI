@@ -280,9 +280,11 @@ print(f"The carbon intensities of the router locations are {router_carbon_intens
 
 file_size = 3.6 * 1000 * 8 
 aberdeen_network_carbon_footprint=get_carbon_footprint_network(router_carbon_intensities,file_size)
-print(f"The network carbon footprint of sending the file over the network {aberdeen_network_carbon_footprint}")
+print(f"The network carbon footprint of sending the file over the network {aberdeen_network_carbon_footprint}gCO2/kWh")
 
 aberdeen_local_carbon_intensity = local_carbon_footprint(energy_joules,aberdeen_CI)
 aberdeen_total_carbon_intensity = aberdeen_local_carbon_intensity + aberdeen_network_carbon_footprint
-print(f"The total carbon footprint of sending the file to aberdeen and running it {aberdeen_total_carbon_intensity}")
+print(f"The total carbon footprint of sending the file to aberdeen and running it {aberdeen_total_carbon_intensity}gCO2/kWh")
 
+
+print(f"The Carbon footprint of running the program in Oxford is {carbon_footprint:.3g} gCO2/kWh")
