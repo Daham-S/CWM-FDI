@@ -231,6 +231,7 @@ def get_carbon_intensity_array(hop_postcodes):
     return carbon_intensities
 
 def get_carbon_footprint_network(carbon_intensities,file_size):
+    carbon_footprint_total = 0
     energy_total = 0
     #Juniper PTX10008
     router_link_capacity = 100*10**9
@@ -238,13 +239,13 @@ def get_carbon_footprint_network(carbon_intensities,file_size):
     router_max_power = 17300
     ports = 288
     dynamic_power = (router_max_power - router_idle_power)
-    dynamic_power_per_port = dynamic_power_per_port/ports
+    dynamic_power_per_port = dynamic_power/ports
     time = file_size/router_link_capacity
     energy_per_hop = dynamic_power_per_port*time
 
     for i,CI in enumerate(carbon_intensities):
         carbon_footprint_total += energy_per_hop * CI
-
+    return carbon_footprint_total
 busy = True
 
 print("Monitoring CPU usage. Waiting for CPU usage to drop below 5%")
@@ -278,5 +279,10 @@ router_carbon_intensities = get_carbon_intensity_array(router_postcodes)
 print(f"The carbon intensities of the router locations are {router_carbon_intensities}")
 
 file_size = 3.6 * 1000 * 8 
-network_carbon_footprint=get_carbon_footprint_network(router_carbon_intensities,file_size)
-print(f"The network carbon footprint of sending the file over the network {network_carbon_footprint}")
+aberdeen_network_carbon_footprint=get_carbon_footprint_network(router_carbon_intensities,file_size)
+print(f"The network carbon footprint of sending the file over the network {aberdeen_network_carbon_footprint}")
+
+aberdeen_local_carbon_intensity = local_carbon_footprint(energy_joules,aberdeen_CI)
+aberdeen_total_carbon_intensity = aberdeen_local_carbon_intensity + aberdeen_network_carbon_footprint
+print(f"The total carbon footprint of sending the file to aberdeen and running it {aberdeen_total_carbon_intensity}")
+
